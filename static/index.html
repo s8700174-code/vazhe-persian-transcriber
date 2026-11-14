@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>واژه — صدای شما، به نوشتار</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+<aside class="sidebar">
+  <a href="/" class="brand"><span class="brand-icon">و</span><span>واژه<small>دستیار نوشتن از صدا</small></span></a>
+  <div class="nav-label">فضای کار</div>
+  <div class="nav-item active"><span>◉</span> تبدیل گفتار به متن</div>
+  <div class="side-note"><span class="privacy-icon">⌁</span><h3 id="privacy-title">پردازش محلی</h3><p id="privacy-text">در مدل‌های محلی صوت ارسال نمی‌شود. Scribe فقط با انتخاب و تأیید شما از سرویس آنلاین استفاده می‌کند.</p><span class="local-badge" id="privacy-badge"><i></i> روی دستگاه شما</span></div>
+  <footer>ساخته‌شده برای زبان فارسی <span>V2T / 01</span></footer>
+</aside>
+<main>
+  <header><div class="breadcrumb">فضای کار <span>/</span> تبدیل گفتار</div><div class="connection"><i></i><span id="connection">در حال اتصال…</span></div></header>
+  <section class="intro"><span class="eyebrow">از شنیدن تا نوشتن</span><h1>صدای شما، <em>به نوشتار.</em></h1><p>فایل صوتی را اضافه کنید؛ متن فارسی را بخوانید، ویرایش کنید و با خود ببرید.</p></section>
+  <div class="workspace">
+    <section class="card upload-card">
+      <div class="card-title"><span class="step">۰۱</span><div><h2>فایل صوتی</h2><p>یک گفت‌وگو، یک ایده، یک روایت</p></div></div>
+      <label id="dropzone" class="dropzone" for="file"><span class="upload-icon">↥</span><strong id="file-title">فایل را اینجا رها کنید</strong><span id="file-subtitle">یا برای انتخاب فایل کلیک کنید</span><span class="file-types" dir="ltr">MP3 · WAV · M4A · FLAC · MP4</span><small id="size-limit">تا ۱۰ گیگابایت</small><input id="file" type="file" accept=".mp3,.wav,.m4a,.ogg,.flac,.aac,.mp4,.webm,.wma,.opus"></label>
+      <audio id="audio" controls hidden></audio>
+      <div class="settings-heading"><h3>تنظیمات تبدیل</h3><span>زبان: فارسی</span></div>
+      <label class="field">مدل تشخیص گفتار<select id="model"><option value="large-v3">Large v3 — اولویت با دقت</option><option value="persian-v4">Persian v4 — فارسی، محلی</option><option value="scribe-v2">Scribe v2 — آنلاین، ElevenLabs</option><option value="turbo">Turbo — سریع‌تر</option><option value="medium">Medium — متعادل</option><option value="small">Small — سبک‌تر</option></select></label>
+      <p id="engine-note" class="hint"></p>
+      <div id="cloud-settings" hidden>
+        <p class="cloud-warning">این گزینه صوت را به ElevenLabs ارسال می‌کند، اینترنت و اعتبار API لازم دارد. نتیجه پس از پاسخ سرویس نمایش داده می‌شود.</p>
+        <label class="field">کلید API یازده‌لبز<input id="api-key" type="password" autocomplete="off" spellcheck="false" dir="ltr" placeholder="ElevenLabs API key"></label>
+        <label class="check"><input id="zero-retention" type="checkbox" checked> درخواست نگه‌داری صفر (فقط حساب سازمانی)</label>
+        <p class="hint">اگر خاموش کنید، نگه‌داری اطلاعات تابع تنظیمات و سیاست سرویس خواهد بود. برنامه در صورت رد درخواست، این گزینه را خودکار خاموش نمی‌کند.</p>
+        <label class="check"><input id="cloud-consent" type="checkbox"> ارسال همین فایل به ElevenLabs و هزینهٔ سرویس را می‌پذیرم.</label>
+        <p class="hint">کلید در برنامه روی دیسک ذخیره نمی‌شود. راهنمای واژه‌ها در این اتصال ارسال نمی‌شود.</p>
+      </div>
+      <label class="field">پردازنده<select id="device"><option value="cpu">CPU — بدون نیاز به CUDA</option><option value="cuda">NVIDIA GPU — نیازمند CUDA</option></select></label>
+      <details><summary>واژه‌های تخصصی و تنظیمات بیشتر <span>＋</span></summary><label class="field">نام‌ها و واژه‌های راهنمای همین فایل<textarea id="prompt" maxlength="1500" rows="3" placeholder="مثلاً: نام افراد، برندها یا اصطلاحات تخصصی"></textarea></label><p class="hint">فقط املای درست نام‌ها و اصطلاحات همین فایل را بنویسید. با انتخاب فایل دیگری این راهنما پاک می‌شود؛ جایگزینی خودکار کلمات انجام نمی‌شود.</p><label class="check"><input id="vad" type="checkbox" checked> تشخیص سکوت و حذف بخش‌های بدون گفتار</label><p class="hint">اگر گفتار آرام جا افتاد، این گزینه را خاموش و دوباره امتحان کنید.</p></details>
+      <button id="start" class="primary" disabled>شروع تبدیل <span>←</span></button>
+      <p class="download-note" id="download-note">مدل در اولین استفاده دانلود می‌شود (مدل بزرگ حدود ۳ گیگابایت). اجرای CPU ممکن است زمان‌بر باشد.</p>
+    </section>
+    <section class="card result-card">
+      <div class="result-header"><div class="card-title"><span class="step">۰۲</span><div><h2>متن شما</h2><p id="result-meta">آماده برای اولین واژه</p></div></div><span id="status-pill" class="pill">آماده</span></div>
+      <div class="group-help"><span>باکس‌های حدود ۳ دقیقه؛ پخش و ویرایش هم‌زمان با تبدیل</span><label class="attach-audio">اتصال صوت<input id="attach-audio" type="file" accept=".mp3,.wav,.m4a,.ogg,.flac,.aac,.mp4,.webm,.wma,.opus"></label></div>
+      <div id="progress-area" hidden><div class="progress-heading"><span id="progress-message" role="status" aria-live="polite"></span><button id="cancel" class="text-button">توقف</button></div><progress id="progress" max="100" value="0"></progress></div>
+      <div id="error" class="error" role="alert" hidden></div>
+      <div id="empty" class="empty"><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>اینجا، صدا به کلمه می‌رسد.</h3><p>پس از شروع تبدیل، جمله‌ها به‌تدریج اینجا ظاهر می‌شوند.</p><div class="features"><span>زمان‌بندی جمله‌ها</span><span>متن قابل ویرایش</span><span>خروجی زیرنویس</span></div></div>
+      <div id="segments" class="segments" aria-label="متن قابل ویرایش"></div>
+      <div class="result-footer"><p>متن را بازبینی کنید؛ نشانهٔ زرد یعنی آن بخش نیاز به توجه بیشتری دارد.</p><div class="export-actions"><button id="copy" disabled>کپی متن</button><button id="txt" disabled>دریافت TXT</button><button id="srt" disabled>دریافت SRT</button><button id="vtt" disabled>دریافت VTT</button></div></div>
+    </section>
+  </div>
+  <div class="bottom-note"><span>✦</span> برای نتیجهٔ بهتر، از صدای واضح، میکروفن نزدیک و گفتار بدون هم‌پوشانی استفاده کنید. دقت صددرصد تضمین‌شده نیست.</div>
+</main>
+<div id="toast" class="toast" role="status" hidden></div>
+</body></html>
